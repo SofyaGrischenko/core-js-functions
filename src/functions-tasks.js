@@ -79,9 +79,11 @@ function getArgumentsCount(funcs) {
  *
  */
 function getPowerFunction(exponent) {
-  return function (base) {
+  function power(base) {
     return base ** exponent;
-  };
+  }
+
+  return power;
 }
 
 /**
@@ -102,12 +104,14 @@ function getPolynom(...coefficients) {
     return null;
   }
 
-  return function (x) {
+  function polynom(x) {
     return coefficients.reduce((acc, coeff, index) => {
       const power = coefficients.length - index - 1;
       return acc + coeff * x ** power;
     }, 0);
-  };
+  }
+
+  return polynom;
 }
 
 /**
@@ -128,13 +132,15 @@ function memoize(func) {
   let cached;
   let hasRun = false;
 
-  return function () {
+  function newFunc() {
     if (!hasRun) {
       cached = func();
       hasRun = true;
     }
     return cached;
-  };
+  }
+
+  return newFunc;
 }
 
 /**
@@ -153,7 +159,7 @@ function memoize(func) {
  * retryer() => 2
  */
 function retry(func, attempts) {
-  return function () {
+  function newTry() {
     let lastError;
 
     for (let i = 0; i < attempts; i += 1) {
@@ -164,7 +170,9 @@ function retry(func, attempts) {
       }
     }
     throw lastError;
-  };
+  }
+
+  return newTry;
 }
 
 /**
@@ -191,7 +199,7 @@ function retry(func, attempts) {
  *
  */
 function logger(func, logFunc) {
-  return function (...args) {
+  function logWrapper(...args) {
     const argsStr = args.map((arg) => JSON.stringify(arg)).join(',');
     const funcName = func.name || 'anonymous';
 
@@ -200,7 +208,9 @@ function logger(func, logFunc) {
     logFunc(`${funcName}(${argsStr}) ends`);
 
     return result;
-  };
+  }
+
+  return logWrapper;
 }
 
 /**
@@ -217,9 +227,11 @@ function logger(func, logFunc) {
  *   partialUsingArguments(fn, 'a','b','c','d')() => 'abcd'
  */
 function partialUsingArguments(fn, ...args1) {
-  return function (...args2) {
+  function partial(...args2) {
     return fn(...args1, ...args2);
-  };
+  }
+
+  return partial;
 }
 
 /**
@@ -241,11 +253,13 @@ function partialUsingArguments(fn, ...args1) {
  */
 function getIdGeneratorFunction(startFrom = 0) {
   let current = startFrom;
-  return function () {
+  function idGenerator() {
     const result = current;
     current += 1;
     return result;
-  };
+  }
+
+  return idGenerator;
 }
 
 module.exports = {
